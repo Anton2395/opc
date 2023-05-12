@@ -2,12 +2,32 @@
 version: "3.9"
 
 services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: mvlab
+      POSTGRES_PASSWORD: z1x2c3
+      POSTGRES_DB: postgres
+      PGDATA: /data/postgres
+      TZ: Europe/Minsk
+    volumes:
+      - postgres_opc:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      opc_network:
+        ipv4_address: 10.0.0.3
+
   api:
     container_name: api_container
     build: ./api
     command:
       bash -c 
       "
+      python3 manage.py makemigrations &&
+      python3 manage.py migrate &&
       python3 manage.py runserver 0.0.0.0:8000
       "
     ports:
@@ -25,3 +45,6 @@ networks:
     ipam:
       config:
         - subnet: 10.0.0.0/24
+
+volumes:
+  postgres_opc:
