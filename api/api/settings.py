@@ -126,9 +126,9 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://mvlab.devzsg.net",
     "http://localhost:8080",
-    "http://itech.by",
+    "http://shylin.ru/",
+    "http://www.shylin.ru/",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
