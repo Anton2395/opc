@@ -4,13 +4,13 @@ from django.db import models
 class Connection(models.Model):
     name = models.CharField(max_length=100, null=False)
     driver = models.CharField(max_length=30, null=False)
-    ip_addres = models.CharField(max_length=17, null=False)
+    ip_address = models.CharField(max_length=17, null=False)
     port = models.IntegerField(default=502, null=False)
     slot = models.IntegerField(null=True)
     rack = models.IntegerField(null=True)
     switcher = models.BooleanField(null=False, default=False)
-    status_conncection = models.BooleanField(null=False, default=False)
-    status_proccese = models.BooleanField(null=False, default=False)
+    status_connection = models.BooleanField(null=False, default=False)
+    status_process = models.BooleanField(null=False, default=False)
 
 
 class Area(models.Model):

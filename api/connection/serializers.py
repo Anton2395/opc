@@ -30,8 +30,8 @@ class ConnectionSerializer(serializers.HyperlinkedModelSerializer):
     # area = AreaSerializer(many=True, read_only=True)
     class Meta:
         model = Connection
-        fields = ["id", "name", "driver", "ip_addres", "port", "slot", "rack", "switcher", "status_conncection",
-                  "status_proccese"]
+        fields = ["id", "name", "driver", "ip_address", "port", "slot", "rack", "switcher", "status_connection",
+                  "status_process"]
 
 
 class AreaSimpleSerializer(serializers.ModelSerializer):
