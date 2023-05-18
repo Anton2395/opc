@@ -7,14 +7,15 @@ class ValueSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Value
         fields = ['id', 'start', 'name', 'type_value_get_data', 'type_value_write_data', 'if_change', 'divide',
-                  'divide_number', 'time_write_if_change', 'bit', 'area_id', 'area']
+                  'divide_number', 'time_write_if_change', 'bit', 'area_id', 'area', 'byte_swap', 'big_endian',
+                  'signed']
 
 
 class ValueSimpleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Value
         fields = ['id', 'start', 'name', 'type_value_get_data', 'type_value_write_data', 'if_change', 'divide',
-                  'divide_number', 'time_write_if_change', 'bit']
+                  'divide_number', 'time_write_if_change', 'bit', 'signed', 'big_endian', 'byte_swap']
 
 
 class AreaSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,7 +24,7 @@ class AreaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Area
         fields = ["id", "name", "type_area", "number_db", "start_byte", "offset", "connection", "connection_id",
-                  "value"]
+                  "value", "slave_id", "function", "size", "start_register"]
 
 
 class ConnectionSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,4 +39,5 @@ class AreaSimpleSerializer(serializers.ModelSerializer):
     value = ValueSimpleSerializer(many=True, read_only=True)
     class Meta:
         model = Area
-        fields = ["id", "name", "type_area", "number_db", "start_byte", "offset", "connection_id", "value"]
+        fields = ["id", "name", "type_area", "number_db", "start_byte", "offset", "connection_id", "value", "slave_id",
+                  "function", "size", "start_register"]
