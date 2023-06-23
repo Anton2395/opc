@@ -46,7 +46,6 @@ while True:
                 status_connect=work_proc[key]['status'].value,
                 status_process=work_proc[key]['process'].is_alive()
             )
-            print(f'status {key}: ', work_proc[key]['status'].value)
         restart_process(restart_list=restart_list, work_process=work_proc)
         time.sleep(1)
     except OperationalError:
