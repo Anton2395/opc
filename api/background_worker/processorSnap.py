@@ -141,7 +141,7 @@ class ConnectSnapProcess(Process):
             case 'double':
                 offset = 4
                 end = start + offset
-                result = disassemble_double(self.bytearray_data[area_name][start:end])
+                result = disassemble_int(self.bytearray_data[area_name][start:end])
             case 'bool':
                 end = start + 1
                 result = from_bytearray_to_bit(data=self.bytearray_data[start:end], bit=param_value.bit)
