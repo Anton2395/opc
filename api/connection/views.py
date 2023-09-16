@@ -8,6 +8,11 @@ from rest_framework.response import Response
 import datetime
 from pytz import timezone
 
+from psycopg2.errors import UndefinedTable
+from django.db.utils import ProgrammingError
+
+from connection.service import check_name_connection, check_name_area, check_name_variable
+
 tz = timezone('Europe/Minsk')
 
 
@@ -61,23 +66,48 @@ class ChartPoint(APIView):
     def post(self, request):
         value = Value.objects.get(pk=request.data['id_variable'])
         table_name = 'sh_' + value.area.connection.name + '_' + value.area.name + '_' + value.name
-        with connection.cursor() as cursor:
-            if 'last_time' in request.data.keys():
-                date_conv = datetime.datetime.fromtimestamp(request.data['last_time'])
-                print(date_conv)
-                date_tz = tz.localize(date_conv)
-                print(date_tz)
-                cursor.execute(
-                    f"""SELECT date_part('epoch', now_time)*1000, value
-                            FROM {table_name}
-                                WHERE now_time>'{date_tz}'
-                                    ORDER by now_time""")
-                answer = cursor.fetchall()
-            else:
-                cursor.execute(f"""SELECT date_part('epoch', now_time)*1000, value
-                                        FROM {table_name}
-                                            ORDER by now_time DESC LIMIT 100""")
-                answer = cursor.fetchall()
+        try:
+            with connection.cursor() as cursor:
+                if 'last_time' in request.data.keys():
+                    date_conv = datetime.datetime.fromtimestamp(request.data['last_time'])
+                    date_tz = tz.localize(date_conv)
+                    cursor.execute(
+                        f"""SELECT date_part('epoch', now_time)*1000, value
+                                FROM {table_name}
+                                    WHERE now_time>'{date_tz}'
+                                        ORDER by now_time""")
+                    answer = cursor.fetchall()
+                else:
+                    cursor.execute(f"""SELECT date_part('epoch', now_time)*1000, value
+                                            FROM {table_name}
+                                                ORDER by now_time DESC LIMIT 100""")
+                    answer = cursor.fetchall()
 
-                answer.reverse()
+                    answer.reverse()
+        except ProgrammingError:
+            answer = []
         return Response(answer)
+
+
+class CheckName(APIView):
+    def post(self, request):
+        if request.data['field'] == 'connection':
+            response = check_name_connection(
+                name=request.data['name'],
+                id_connect=request.data['id'] if 'id' in request.data.keys() else None
+            )
+        elif request.data['field'] == 'area':
+            response = check_name_area(
+                name=request.data['name'],
+                area_id=request.data['id'] if 'id' in request.data.keys() else None,
+                connection_id=request.data['connection_id']
+            )
+        elif request.data['field'] == 'variable':
+            response = check_name_variable(
+                name=request.data['name'],
+                variable_id=request.data['id'] if 'id' in request.data.keys() else None,
+                area_id=request.data['area_id']
+            )
+        else:
+            response = False
+        return Response(response)

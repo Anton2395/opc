@@ -6,6 +6,7 @@ from multiprocessing import Process
 
 import modbus_tk.defines as cst
 import modbus_tk.modbus_tcp as modbus_tcp
+import pytz
 
 from db_service import create_connection
 from classType import AreaItem, ValueItem
@@ -130,7 +131,7 @@ class ConnectModProcess(Process):
         value = self.__parse_bytearray(value_param, area_name)
         now = datetime.datetime.now()
         min_time_check = value_param.min_time_check
-        
+
         if value_param.if_change and value_param.name not in self.values:
             self.values[value_param.name] = value
             self.values["time_"+value_param.name] = now
@@ -138,7 +139,7 @@ class ConnectModProcess(Process):
             
         if value_param.if_change and value_param.name in self.values and "time_" + value_param.name in self.values:
             if value != self.values[value_param.name]:
-                if (now - self.values['time_'+value_param.name]).microseconds/1000 >= min_time_check:
+                if round((now - self.values['time_'+value_param.name]).total_seconds()*1000) >= min_time_check:
                     self.values[value_param.name] = value
                     self.values["time_"+value_param.name] = now
                     self.__write_to_db(value_param.name, value)
@@ -148,7 +149,7 @@ class ConnectModProcess(Process):
             self.__write_to_db(value_param.name, value)
 
         if not value_param.if_change and "time_" + value_param.name in self.values:
-            if (now - self.values['time_'+value_param.name]).microseconds/1000 >= min_time_check:
+            if round((now - self.values['time_'+value_param.name]).total_seconds()*1000) >= min_time_check:
                 self.values["time_"+value_param.name] = now
                 self.__write_to_db(value_param.name, value)
 

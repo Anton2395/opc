@@ -34,7 +34,7 @@ class Value(models.Model):
     name = models.CharField(max_length=100, null=False)
     type_value_get_data = models.CharField(max_length=10, null=False)
     type_value_write_data = models.CharField(max_length=10, null=False)
-    if_change = models.BooleanField(null=False, default=True)
+    if_change = models.BooleanField(null=False, default=False)
     divide = models.BooleanField(null=False, default=False)
     divide_number = models.FloatField(default=1)
     bit = models.IntegerField(null=True)
@@ -42,6 +42,6 @@ class Value(models.Model):
     # Modbus TCP
     signed = models.BooleanField(default=False, null=False)
     big_endian = models.BooleanField(default=False, null=False)
-    byte_swap = models.BooleanField(default=True, null=False)
+    byte_swap = models.BooleanField(default=False, null=False)
 
     area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='value')

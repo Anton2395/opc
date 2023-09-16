@@ -46,6 +46,8 @@ services:
       "
       python3 background_worker/main.py
       "
+    environment:
+      TZ: "Europe/Minsk"
     networks:
       opc_network:
         ipv4_address: 10.0.0.4
