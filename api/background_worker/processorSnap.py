@@ -166,7 +166,7 @@ class ConnectSnapProcess(Process):
             self.values[f'write_time_{value_param.name}'] = current_time()
 
         if value_param.if_change and self.values[value_param.name] != value and \
-                (now-self.values[f'write_time_{value_param.name}']).microseconds/1000 > timeout_sec:
+                round((now - self.values[f'write_time_{value_param.name}']).total_seconds() * 1000) > timeout_sec:
             self.values[value_param.name] = value
             self.__write_to_db(table_name=value_param.name, value=value)
             self.values[f'write_time_{value_param.name}'] = current_time()
@@ -175,7 +175,7 @@ class ConnectSnapProcess(Process):
             if f'write_time_{value_param.name}' not in self.values:
                 self.__write_to_db(table_name=value_param.name, value=value)
                 self.values[f'write_time_{value_param.name}'] = current_time()
-            elif (now - self.values[f'write_time_{value_param.name}']).microseconds/1000 > timeout_sec:
+            elif round((now - self.values[f'write_time_{value_param.name}']).total_seconds() * 1000) >= timeout_sec:
                 self.__write_to_db(table_name=value_param.name, value=value)
                 self.values[f'write_time_{value_param.name}'] = current_time()
 

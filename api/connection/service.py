@@ -8,7 +8,7 @@ def check_name_connection(name: str, id_connect: int) -> bool:
         for connect in connections:
             if connect.id != id_connect:
                 answer = False
-        return not answer
+        return answer
     else:
         return not connections.exists()
 
